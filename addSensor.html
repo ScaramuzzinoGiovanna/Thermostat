@@ -1,0 +1,64 @@
+{% extends 'home.html' %}
+{% block body %}
+
+        <div class="page-header" id="banner">
+        <div class="row">
+          <div class="col-lg-8 col-md-7 col-sm-6">
+            <h1>Add Sensor</h1>
+            <p class="lead">Your home thermostats kit.</p>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- Forms
+      ================================================== -->
+      <div class="bs-docs-section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="forms">Add a new Sensor</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="bs-component">
+                 {% if error  %}
+                    <div class="alert alert-dismissible alert-warning">
+                          <button type="button" class="close" data-dismiss="alert">&times;</button>
+                          <h4 class="alert-heading">Warning!</h4>
+                          <p class="mb-0"><b>{{ error }}. Try again! </b> </p>
+                        </div>
+                {% endif %}
+              <form method="post" action="/addThermostat">
+                <fieldset>
+                  <legend>Add a new sensor filling the follow forms:</legend>
+                  <div class="form-group">
+                      <label for="room" class="label"> Thermostat Room: </label>
+                      <input name="room" type=”text” class="input" aria-describedby="emailHelp" placeholder="Room..." required>
+                      <small id="emailHelp" class="form-text text-muted">Enter the room where you've placed your thermostat.</small>
+
+                  </div>
+                  <div class="form-group">
+                      <label for="url" class="label"> Ip Address :  </label>
+                      <input name="url" type=”text” class="input" aria-describedby="emailHelp" placeholder="Ip...es:http://127.192.168.0.111" required>
+                      <small id="emailHelp" class="form-text text-muted">Enter thermostat's Ip Address.</small>
+                  </div>
+                    <button type="submit" class="btn btn-primary"> Submit </button>
+                    <button type=”submit” class="btn btn-primary"  onclick="window.location.href='{{ url_for('addThermostat') }}';
+                                "> Cancel</button>
+                </fieldset>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+ {% endblock %}
+
+
+
