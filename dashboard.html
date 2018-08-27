@@ -18,14 +18,14 @@
                 value:{{ temp }}+'\xB0'+'C',
                 min: 0,
                 max: 60,
-                title: "Current Temperature",
+                title: "Temperature",
                 decimals: 2,
                 titleFontFamily: 'Arial',
                 titleFontColor: "black",
                 valueFontColor: "black",
                 valueFontFamily: "Arial",
                 labelFontColor: "black",
-                label: 'CURRENT TEMPERATURE',
+                label: 'TEMPERATURE',
 
                 gaugeWidthScale: 0.5,
                 stroke: '#1A1A1A',
@@ -135,15 +135,15 @@
               id: "status",
               value: {{ hum }}+'\x25',
               min: 0,
-              max: 60,
-              title: "Current Humidity",
+              max: 100,
+              title: " Humidity",
               decimals: 2,
               titleFontFamily: 'Arial',
               titleFontColor: "black",
               valueFontColor: "black",
               valueFontFamily: "Arial",
               labelFontColor: "black",
-              label:'CURRENT HUMIDITY',
+              label:'HUMIDITY',
               gaugeWidthScale: 0.5,
               stroke: '#1A1A1A',
               symbol: '%',
@@ -253,15 +253,27 @@
           <div class="col-lg-12">
             <div class="page-header">
               <h1 id="forms">Your Sensor Stats</h1>
+                {% if error %}
+                    <div class="alert alert-dismissible alert-danger">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      <strong>Attention!</strong>
+                        <p class="mb-0">{{ error }} <a href="#" class="alert-link">Se necessario contattare i realizzatori</a>.</p>
+                    </div>
+                {% endif %}
                 <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ url_for('graphic', idSensor=idSensor) }}';
                                     ">Graphic</button>
+                </div>
+
                 <div class="Gauges">
-                    <div class="justGage" id="min" style="float: left; width: 200px; height:300px;"></div>
-                    <div class="justGage" id="status" align="center" style="float: left; width: 300px; height:300px; "></div>
+                    <div class="justGage" id="min" style="float: left; width: 200px; height:300px;">
+                    </div>
+                    <div class="justGage" id="status" align="center" style="float: left; width: 300px; height:300px; ">
+                    </div>
                     <div class="justGage" id="max" style="float: left; width: 200px; height:300px;"></div>
                     <div class="GaugesTemp">
                         <div class="justGage" id="minT" style=" float: left; width: 200px; height:300px;"></div>
-                        <div class="justGage" id="statusT" align="center" style="float: left; width: 300px; height:300px; "></div>
+                        <div class="justGage" id="statusT" align="center" style="float: left; width: 300px; height:300px; ">
+                        </div>
                         <div class="justGage" id="maxT" style="float: left; width: 200px; height:300px;"></div>
                      </div>
                 </div>
