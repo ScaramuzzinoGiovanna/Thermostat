@@ -27,7 +27,8 @@ class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(120), unique=True, nullable=False)
     room = db.Column(db.String(120), unique=True, nullable=False)
-    measurements = db.relationship("Measurement", backref="sensor", lazy=True)
+    measurements = db.relationship("Measurement", backref="sensor",
+                                   cascade="all, delete, delete-orphan", lazy=True)
 
     def __repr__(self):
         return f"Sensor('{self.id},'{self.url}','{self.room}')"

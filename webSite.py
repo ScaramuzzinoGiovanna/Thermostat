@@ -6,6 +6,7 @@ from model import app
 from datetime import datetime
 import dateutil.parser
 
+
 db = query_db.Query()
 
 @app.route('/')
@@ -36,35 +37,38 @@ def removeThermostat(idSensor):
 
 @app.route('/measurements/<idSensor>',methods=['GET', 'POST'])
 def measurements(idSensor):
-    url=db.get_url(idSensor)
-    temp = db.get_last_measurement('temperature',url)
-    hum = db.get_last_measurement('humidity',url)
-    temp_min=db.get_min_measurement('temperature',url)
-    temp_max=db.get_max_measurement('temperature',url)
-    hum_min=db.get_min_measurement('humidity',url)
-    hum_max=db.get_max_measurement('humidity',url)
+    url = db.get_url(idSensor)
+    temp,date_time = db.get_last_measurement('temperature',url)
+    hum, date_time= db.get_last_measurement('humidity',url)
+    temp_min = db.get_min_measurement('temperature',url)
+    if temp_min==False:
+        error = 'Non sono stati trovati risultati per oggi. Controllare che il termostato sia acceso.'
+        return f.render_template('dashboard.html', temp=temp, hum=hum, date_time=date_time, error=error, idSensor=idSensor)
+    temp_max = db.get_max_measurement('temperature',url)
+    hum_min = db.get_min_measurement('humidity',url)
+    hum_max = db.get_max_measurement('humidity',url)
 
     return f.render_template('dashboard.html', temp=temp, hum=hum, temp_min=temp_min,
-                             temp_max=temp_max, hum_min=hum_min, hum_max=hum_max, idSensor=idSensor)
+                             temp_max=temp_max, hum_min=hum_min, hum_max=hum_max, idSensor=idSensor,date_time=date_time)
 
 
 @app.route('/graphic/<idSensor>', methods=['GET', 'POST'])
 def graphic(idSensor):
-
+    url= db.get_url(idSensor)
     if f.request.method == 'POST':
-        url = db.get_url(idSensor)
-        start_date = dateutil.parser.parse(f.request.form.get('datetime_start'))
-        end_date = dateutil.parser.parse(f.request.form.get('datetime_stop'))
+        if f.request.form['option']=='temperature':
+            if f.request.form['date'] == 'today':
+                graph_data = db.read_measurement_today(datetime.now().strftime("%Y-%m-%d"), 'temperature', url)
+                print(graph_data)
 
-        if f.request.form.get('temperature') is not None:
-            graph_data = db.read_measurement(start_date, end_date, 'temperature',url)
+        if f.request.form['option']=='humidity':
+            if f.request.form['date']=='today':
+                graph_data = db.read_measurement_today(datetime.now().strftime("%Y-%m-%d"), 'humidity', url)
 
-        if f.request.form.get('humidity') is not None:
-            graph_data = db.read_measurement(start_date, end_date, 'humidity', url)
+        graph_label = db.read_hour(datetime.now().strftime("%Y-%m-%d"),url)
+        return f.render_template('graphic.html', idSensor=idSensor,data=graph_data,labels=graph_label)
+    return f.render_template('graphic.html',idSensor=idSensor)
 
-        graph_labels = db.get_times(start_date, end_date, url)
-        return f.renderer_template('graphic.html', idSensor=idSensor )
-    return f.render_template('graphic.html')
 
 
 app.secret_key = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(128))
